@@ -7,8 +7,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 class User(AbstractUser):
     email = models.EmailField(blank=False, unique=True, null=False)
     
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name']
+    REQUIRED_FIELDS = ['email', 'first_name', 'last_name']
     
     def __str__(self) -> str:
         return "Hi, {} {} your account is created".format(self.first_name, self.last_name)

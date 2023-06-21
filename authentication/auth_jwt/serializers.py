@@ -17,7 +17,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
-        fields = ['id', 'email', 'first_name', 'last_name', 'password', 'retyped_password']
+        fields = ['id', 'username' ,'email', 'first_name', 'last_name', 'password', 'retyped_password']
     
     def validate(self, validated_data):
         if validated_data['password'] != validated_data['retyped_password']:
@@ -27,10 +27,6 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data, username = None):
         validated_data.pop('retyped_password', None)
-        username = validated_data['email']
-        validated_data['username'] = username
-        
-        validated_data.pop('email')
         password = validated_data.pop('password')
         
         user = User.objects.create_user(**validated_data)
