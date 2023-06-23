@@ -15,12 +15,13 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+AUTH_USER_MODEL = 'auth_jwt.User'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-2t4883d4=26p739!d(cblbsq$(%q#n@zs65wp*648m-fqt&i*&'
+SECRET_KEY = 'django-insecure-f=*+z!83swx=@b=0bt3o#diilwu)qp#uw$3uvulq6k8losq267'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -74,6 +75,10 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
 }
+
+AUTHENTICATION_BACKENDS = (
+        'django.contrib.auth.backends.ModelBackend',
+    )
 
 WSGI_APPLICATION = 'authentication.wsgi.application'
 
@@ -129,6 +134,3 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# User authentication model
-AUTH_USER_MODEL = 'auth_jwt.User'

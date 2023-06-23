@@ -7,45 +7,45 @@ from rest_framework_simplejwt.tokens import RefreshToken
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'email', 'first_name', 'last_name', 'password']
-
-class UserRegisterSerializer(serializers.ModelSerializer):
-    PASSWORD_HELP_TEXT = "Please include the numbers and symbols for the strong password."
-    
-    password = serializers.CharField(required=True, write_only=True, min_length=8, max_length=60, help_text=PASSWORD_HELP_TEXT)
-    retyped_password = serializers.CharField(required=True,write_only=True)
+        fields = '__all__'
+        
+class UserRegistrationSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, required=True, min_length=8, max_length=30)
+    retype_password = serializers.CharField(write_only=True, required=True)
     
     class Meta:
-        model = User
-        fields = ['id', 'username' ,'email', 'first_name', 'last_name', 'password', 'retyped_password']
+        model = User 
+        fields = ['id', 'username' ,'email', 'first_name', 'last_name', 'password', 'retype_password']
     
-    def validate(self, validated_data):
-        if validated_data['password'] != validated_data['retyped_password']:
-            raise serializers.ValidationError({"password": "Password fields didn't match."})
+    def validated(self, *attrs):
+        if attrs.get('password') != attrs.get('retype_password'):
+            raise serializers.ValidationError("Passwords do not match")
+        return attrs
+    
+    def create(self, validated_data):
+        validated_data.pop('retype_password')
         
-        return validated_data
-
-    def create(self, validated_data, username = None):
-        validated_data.pop('retyped_password', None)
         password = validated_data.pop('password')
-        
         user = User.objects.create_user(**validated_data)
-        
+           
         user.set_password(password)
         
         return user
-    
+        
+        
 class UserLoginSerializer(serializers.ModelSerializer):
-    email = serializers.CharField(required=True, write_only=True)
-    password = serializers.CharField(required=True, write_only=True)
-    access = serializers.CharField(read_only=True)
-    refresh = serializers.CharField(read_only=True)
+    
+    username = serializers.CharField(required=True, write_only=True)
+    password = serializers.CharField(required=True,write_only=True)
+    access_token = serializers.CharField(read_only=True)
+    refresh_token = serializers.CharField(read_only=True)
     
     class Meta:
         model = User
-        fields = ['email', 'password', 'access', 'refresh']
-    
+        fields = ['username', 'password', 'access_token', 'refresh_token']
+        
     def validate(self, attrs):
+        import pdb; pdb.set_trace();
         username = attrs.get('username')
         password = attrs.get('password')
         
@@ -70,5 +70,4 @@ class UserLoginSerializer(serializers.ModelSerializer):
 
         except User.DoesNotExist:
             raise serializers.ValidationError("Invalid login credentials")
-
-        
+    
